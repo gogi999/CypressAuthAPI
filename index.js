@@ -14,6 +14,10 @@ mongoose
     .then(() => console.log('Connected to database!'))
     .catch(() => console.log('Connection failed!!!'));
 
+// Middleware
+app.use(express.json());
+
+// Route middleware
 app.use('/api/user', authRoute);
 
 app.listen(3000, () => console.log('Server is running on port 3000!'));
