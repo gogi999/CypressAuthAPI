@@ -4,7 +4,7 @@ it('Returns 200 when we hit /register', () => {
   let body = {
     name: 'TestName',
     email: 'foo@bar.com',
-    password: 'Test09876'
+    password: process.env.PASSWORD
   }
 
   cy.request('POST', 'http://localhost:3000/api/user/register', body)
