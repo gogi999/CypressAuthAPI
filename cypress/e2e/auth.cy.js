@@ -6,7 +6,7 @@ describe('/user/register', () => {
     let body = {
       name: 'TestUser',
       email: 'testuser@email.com',
-      password: process.env.PASSWORD // 
+      password: 'pass123456' // process.env.PASSWORD
     }
   
     cy.request('POST', registerEndpoint, body)
@@ -14,7 +14,7 @@ describe('/user/register', () => {
         expect(response.status).to.eq(200)
         expect(response.body.name).to.eq('TestUser')
         expect(response.body.email).to.eq('testuser@email.com')
-        expect(response.body.password).to.eq(process.env.PASSWORD)
+        expect(response.body.password).to.eq('pass123456')
       })
   })
 
@@ -22,7 +22,7 @@ describe('/user/register', () => {
     let badTestUser = {
       name: '1',
       email: 'testuser',
-      password: process.env.PASSWORD // process.env.PASSWORD
+      password: '1' // process.env.PASSWORD
     }
   
     cy.request({
@@ -39,7 +39,7 @@ describe('/user/register', () => {
     let badTestUser = {
       name: 'ValidName',
       email: 'invalidEmail',
-      password: process.env.PASSWORD // process.env.PASSWORD
+      password: 'validPassword' // process.env.PASSWORD
     }
   
     cy.request({
