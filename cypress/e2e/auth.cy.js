@@ -1,11 +1,14 @@
 /// <reference types="cypress" />
 
+const Guid = require('guid')
+
 describe('/user/register', () => {
   const registerEndpoint = 'http://localhost:3000/api/user/register'
   it('Register creates user', () => {
+    let dynamicEmail = Guid.raw() + '@bar.com'
     let body = {
       name: 'TestUser',
-      email: 'testuser@email.com',
+      email: dynamicEmail,
       password: 'pass123456' // process.env.PASSWORD
     }
   
@@ -13,7 +16,7 @@ describe('/user/register', () => {
       .then((response) => {
         expect(response.status).to.eq(200)
         expect(response.body.name).to.eq('TestUser')
-        expect(response.body.email).to.eq('testuser@email.com')
+        expect(response.body.email).to.eq(dynamicEmail)
         expect(response.body.password).to.eq('pass123456')
       })
   })
@@ -50,6 +53,24 @@ describe('/user/register', () => {
     }).then((response) => {
       expect(response.status).to.eq(400)
       expect(response.body).to.eq('"email" must be a valid email')
+    })
+  })
+
+  it('Cannot create duplicate user', () => {
+    let goodTestUser = {
+      name: 'ValidName',
+      email: 'doNotDeleteEmail@email.com',
+      password: 'validPassword' // process.env.PASSWORD
+    }
+  
+    cy.request({
+      method: 'POST',
+      url: registerEndpoint,
+      failOnStatusCode: false,
+      body: badTestUser
+    }).then((response) => {
+      expect(response.status).to.eq(400)
+      expect(response.body).to.eq('Email already registered!')
     })
   })
   
