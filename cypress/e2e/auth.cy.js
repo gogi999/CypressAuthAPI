@@ -60,14 +60,14 @@ describe('/user/register', () => {
     let goodTestUser = {
       name: 'ValidName',
       email: 'doNotDeleteEmail@email.com',
-      password: process.env.PASSWORD // 
+      password: process.env.PASSWORD // process.env.PASSWORD
     }
   
     cy.request({
       method: 'POST',
       url: registerEndpoint,
       failOnStatusCode: false,
-      body: badTestUser
+      body: goodTestUser
     }).then((response) => {
       expect(response.status).to.eq(400)
       expect(response.body).to.eq('Email already registered!')
