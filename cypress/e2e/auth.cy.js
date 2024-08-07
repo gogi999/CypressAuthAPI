@@ -3,13 +3,23 @@
 const Guid = require('guid')
 
 describe('/user/register', () => {
+  it('Returns 400 when we hit /register with no body', () => {
+    cy.request({
+      method: 'POST',
+      url: registerEndpoint,
+      failOnStatusCode: false
+    }).then((response) => {
+      expect(response.status).to.eq(400)
+    })
+  })
+
   const registerEndpoint = 'http://localhost:3000/api/user/register'
-  it('Register creates user', () => {
+  it('Creates user with valid body', () => {
     let dynamicEmail = Guid.raw() + '@bar.com'
     let body = {
       name: 'TestUser',
       email: dynamicEmail,
-      password: process.env.PASSWORD // process.env.PASSWORD
+      password: process.env.PASSWORD
     }
   
     cy.request('POST', registerEndpoint, body)
@@ -17,7 +27,7 @@ describe('/user/register', () => {
         expect(response.status).to.eq(200)
         expect(response.body.name).to.eq('TestUser')
         expect(response.body.email).to.eq(dynamicEmail)
-        expect(response.body.password).to.eq('pass123456')
+        expect(response.body.password).to.not.eq('pass123456')
       })
   })
 
@@ -25,7 +35,7 @@ describe('/user/register', () => {
     let badTestUser = {
       name: '1',
       email: 'testuser',
-      password: process.env.PASSWORD // process.env.PASSWORD
+      password: process.env.PASSWORD
     }
   
     cy.request({
@@ -42,7 +52,7 @@ describe('/user/register', () => {
     let badTestUser = {
       name: 'ValidName',
       email: 'invalidEmail',
-      password: process.env.PASSWORD // process.env.PASSWORD
+      password: process.env.PASSWORD 
     }
   
     cy.request({
@@ -60,7 +70,7 @@ describe('/user/register', () => {
     let goodTestUser = {
       name: 'ValidName',
       email: 'doNotDeleteEmail@email.com',
-      password: process.env.PASSWORD // process.env.PASSWORD
+      password: process.env.PASSWORD 
     }
   
     cy.request({
@@ -73,15 +83,4 @@ describe('/user/register', () => {
       expect(response.body).to.eq('Email already registered!')
     })
   })
-  
-  it('Returns 400 when we hit /register with no body', () => {
-    cy.request({
-      method: 'POST',
-      url: registerEndpoint,
-      failOnStatusCode: false
-    }).then((response) => {
-      expect(response.status).to.eq(400)
-    })
-  })
-  
 })

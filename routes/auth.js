@@ -1,3 +1,4 @@
+const bcrypt = require('bcryptjs');
 const router = require('express').Router();
 const User = require('../model/users');
 const { DataValidation } = require('../dataValidation');
@@ -13,10 +14,13 @@ router.post('/register', async (req, res) => {
 
     if (emailExists) return res.status(400).send('Email already registered!');
 
+    // Encrypt password
+    const encryptedPassword = await bcrypt.hash(req.body.password, 10);
+
     const user = new User({
         name: req.body.name,
         email: req.body.email,
-        password: req.body.password
+        password: encryptedPassword
     });
 
     try {
